@@ -1,0 +1,7 @@
+Cleanup Job working details: The class CleanupBuildLivesStepClean has impl of Different types of build cleanup (like archiving, Inactivating, Inactivating and deleting logs, Deletion)
+* Archive: 	- Changes the state of BuildLife to archived (adds this state to a persistent list and marks it dirty) (Also seem to make an entry in build_life_status table)
+			- Calls UnitOfWorkCommit. This inturn updates all newObjectList, dirtyObjectList and deletObjectList. The dirtyObjList first calls BuildLife.preStore() which copies repoId to 'codestationRepositoryIdToDelete' instance varialbe. Then in UOW, the dirtyObjList calls dao.update() which probably updates build_life table to mark status as archived. Next in UOW, the dirtyObjList calls BuildLife.postStore() which clean up files for archiving i.e. gets codeStationRepo to deleteAllChangeSets() and close() (This is deleting buildlife artifacts). Didn't get exact table for Artifacts but this codestation_build_life_prop table seems related to it.
+* Deletion:		
+			- Impl in DeleteBuildLifeCommand class. Here it calls buildLife.delete(), this checks if there's any dependency (if yes, throws Exception) and adds to deleteOjbList of UOW. buildLife.delete() also deletes JobTrace (which inturn removes BuildLifeStatus and BuildLifeStamp) and PersistentDependencyPlan by adding it to deleteOjbList of UOW.
+			- In UOW.commit(), JobTrace, workflowCase and BuildRequest are added to a postDeleteList 
+			
