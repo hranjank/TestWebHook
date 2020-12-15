@@ -5,4 +5,4 @@ cdCleanup Job working details: The class CleanupBuildLivesStepClean has impl of 
 			- Impl in DeleteBuildLifeCommand class. Here it calls buildLife.delete(), this checks if there's any dependency (if yes, throws Exception) and adds to deleteOjbList of UOW. buildLife.delete() also deletes JobTrace (which inturn removes BuildLifeStatus and BuildLifeStamp) and PersistentDependencyPlan by adding it to deleteOjbList of UOW.
 			- In UOW.commit(), JobTrace, workflowCase and BuildRequest are added to a postDeleteList 
 			
-jT
+
